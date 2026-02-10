@@ -41,6 +41,7 @@ export INTERNAL_IP=127.0.0.1
   --service-cluster-ip-range=10.0.0.0/16 \
   --insecure-bind-address=0.0.0.0 \
   --insecure-port=8080 \
+  --service-account-key-file=/var/lib/kubernetes/service-account.pub \
   --v=2 >/dev/null 2>&1 &
 API_PID=$!
 
