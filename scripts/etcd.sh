@@ -5,11 +5,15 @@ if [ "$EUID" -ne 0 ]; then
   exit 1
 fi
 
-#wget -q --https-only \
-#"https://github.com/coreos/etcd/releases/download/v3.3.9/etcd-v3.3.9-linux-amd64.tar.gz"
+# Download and install the binary
+
+# wget -q --https-only \
+# "https://github.com/coreos/etcd/releases/download/v3.3.9/etcd-v3.3.9-linux-amd64.tar.gz"
 # tar -xf etcd-v3.3.9-linux-amd64.tar.gz
 # cd etcd-v3.3.9-linux-amd64
 # cp etcd etcdctl /usr/local/bin/
+# chmod +x /usr/local/bin/etcd
+# chmod +x /usr/local/bin/etcdctl
  
 export INTERNAL_IP=127.0.0.1
 export ETCD_NAME=controller
@@ -49,5 +53,5 @@ export CONTROLLER0_IP=127.0.0.1
   --data-dir=/var/lib/etcd &
 
 ETCD_PID=$!
-echo "Etcd started with PID: $ETCD_PID"
+echo -e "\n\nETCD started with PID: $ETCD_PID"
 

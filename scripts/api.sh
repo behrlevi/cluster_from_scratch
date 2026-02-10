@@ -5,8 +5,9 @@ if [ "$EUID" -ne 0 ]; then
   exit 1
 fi
 
-#wget https://storage.googleapis.com/kubernetes-release/release/v1.13.0/bin/linux/amd64/kube-apiserver
-#cp kube-apiserver /usr/local/bin/
+# wget https://storage.googleapis.com/kubernetes-release/release/v1.26.0/bin/linux/amd64/kube-apiserver
+# cp kube-apiserver /usr/local/bin/
+# chmod +x /usr/local/bin/kube-apiserver
 
 export INTERNAL_IP=127.0.0.1
 
@@ -36,13 +37,27 @@ export INTERNAL_IP=127.0.0.1
 #  --service-node-port-range=30000-32767 \\
 #  --v=2
 
+# Compatible with ver. 1.13
+# /usr/local/bin/kube-apiserver \
+#   --etcd-servers=http://127.0.0.1:2379 \
+#   --service-cluster-ip-range=10.0.0.0/16 \
+#   --insecure-bind-address=0.0.0.0 \
+#   --insecure-port=8080 \
+#   --service-account-key-file=/var/lib/kubernetes/service-account.pub \
+#   --v=2 >/dev/null 2>&1 &
+
+# Compatible with version 1.26
 /usr/local/bin/kube-apiserver \
   --etcd-servers=http://127.0.0.1:2379 \
   --service-cluster-ip-range=10.0.0.0/16 \
-  --insecure-bind-address=0.0.0.0 \
-  --insecure-port=8080 \
+  --bind-address=0.0.0.0 \
+  --secure-port=6443 \
+  --token-auth-file=/var/lib/kubernetes/users.csv \
   --service-account-key-file=/var/lib/kubernetes/service-account.pub \
+  --service-account-signing-key-file=/var/lib/kubernetes/service-account-key.pem \
+  --service-account-issuer=https://kubernetes.default.svc.cluster.local \
   --v=2 >/dev/null 2>&1 &
+
 API_PID=$!
 
 sleep 5
