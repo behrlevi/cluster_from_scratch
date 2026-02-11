@@ -161,3 +161,12 @@ You will see a new network related error:
 ```
 network is not ready: container runtime network not ready: NetworkReady=false reason:NetworkPluginNotReady message:Network plugin returns error: cni plugin not initialized
 ```
+
+ ## CNI
+ ```
+sudo mkdir -p /opt/cni/bin /etc/cni/net.d
+wget https://github.com/containernetworking/plugins/releases/download/v1.4.0/cni-plugins-linux-amd64-v1.4.0.tgz
+sudo tar -xzvf cni-plugins-linux-amd64-v1.4.0.tgz -C /opt/cni/bin
+ ```
+
+ Copy 10-mynet.conf into /etc/cni/net.d/
