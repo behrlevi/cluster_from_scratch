@@ -4,6 +4,8 @@
 - Kube API Server - manages requests and coordinates components in the cluster
 - Kube Controller Manager - consists of multiple controllers tasked with controlling various aspects of the pod-cluster relationship
 - Scheduler - assigns pods to nodes based on certain criteria
+- Kubelet - running on each node and overseeing its activities
+- CNI (Container Network Interface) - implements a network model
 
 ## ETCD
 The first component we need for our cluster is the database reponsinble for keeping a single source of truth about the state of each resource, the ETCD database.
@@ -163,10 +165,14 @@ network is not ready: container runtime network not ready: NetworkReady=false re
 ```
 
  ## CNI
+
+ The network plugin is used to declare and operate the network model used in the cluster.
+
  ```
 sudo mkdir -p /opt/cni/bin /etc/cni/net.d
 wget https://github.com/containernetworking/plugins/releases/download/v1.4.0/cni-plugins-linux-amd64-v1.4.0.tgz
 sudo tar -xzvf cni-plugins-linux-amd64-v1.4.0.tgz -C /opt/cni/bin
  ```
 
-Copy 10-mynet.conf into /etc/cni/net.d/
+The config file defines the configuration of the network. The particular file provided represents a minimal configuration enabling pods to have IP addresses from the defines subnet.
+For CNI to pick it up, you need to copy **10-mynet.conf** into **/etc/cni/net.d/**.

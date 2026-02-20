@@ -17,8 +17,8 @@ fi
   --config=/var/lib/kubelet/kubelet-config.yaml \
   --cgroup-driver=systemd \
   --container-runtime-endpoint=unix:///var/run/containerd/containerd.sock \
-# --pod-manifest-path=/etc/kubernets/manifests \ # used for static pods
   --v=2 >/dev/null 2>&1 &
+  # --pod-manifest-path=/etc/kubernets/manifests \ # used for static pods
 
 API_PID=$!
 
