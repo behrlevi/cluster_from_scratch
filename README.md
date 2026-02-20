@@ -169,4 +169,4 @@ wget https://github.com/containernetworking/plugins/releases/download/v1.4.0/cni
 sudo tar -xzvf cni-plugins-linux-amd64-v1.4.0.tgz -C /opt/cni/bin
  ```
 
- Copy 10-mynet.conf into /etc/cni/net.d/
+Copy 10-mynet.conf into /etc/cni/net.d/
