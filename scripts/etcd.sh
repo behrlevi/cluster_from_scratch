@@ -14,7 +14,7 @@ fi
 # cp etcd etcdctl /usr/local/bin/
 # chmod +x /usr/local/bin/etcd
 # chmod +x /usr/local/bin/etcdctl
- 
+
 export INTERNAL_IP=127.0.0.1
 export ETCD_NAME=controller
 export CONTROLLER0_IP=127.0.0.1
@@ -39,7 +39,6 @@ export CONTROLLER0_IP=127.0.0.1
 #  --initial-cluster-state new \
 #  --data-dir=/var/lib/etcd
 
-
 # Without cert
 /usr/local/bin/etcd \
   --name ${ETCD_NAME} \
@@ -50,8 +49,7 @@ export CONTROLLER0_IP=127.0.0.1
   --initial-cluster-token etcd-cluster-0 \
   --initial-cluster controller=http://${CONTROLLER0_IP}:2380 \
   --initial-cluster-state new \
-  --data-dir=/var/lib/etcd &
+  --data-dir=/var/lib/etcd 2>&1 &
 
 ETCD_PID=$!
 echo -e "\n\nETCD started with PID: $ETCD_PID"
-

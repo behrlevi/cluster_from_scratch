@@ -25,6 +25,17 @@ Now, running the previous 'get' will return our key.
 
 ## Kube API Server
 
+**Prerequisites:**
+Even though we are building a cluster without TLS, we need to generate two keys for token generation.
+
+```
+# Generate private key (for Controller Manager)
+openssl genrsa -out /var/lib/kubernetes/service-account-key.pem 2048
+
+# Generate public key (for API Server verification)
+openssl rsa -in /var/lib/kubernetes/service-account-key.pem -pubout -out /var/lib/kubernetes/service-account.pub
+```
+
 Since we have our database ready, we can start the component responsible for accepting the requests made to the cluster either by the user or by the nodes.
 
 We will be using kubectl to access the API endpoint. For this we need a config file (see 'kubeconfig' in the root of the repo). You can copy this over to ~/.kubec/config for convenience.
@@ -59,19 +70,14 @@ kubectl get serviceaccounts
 When the service account is created we can try to create a pod, but we are getting back the following error:
 "Error from server (ServerTimeout): No API token found for service account "default", retry after the token is automatically created and added to the service account"
 
-This is because **Kubernetes Controller** is not generating a token for the account. Since we don't have a runner controller yet.
+This is because **Kubernetes Controller** is not generating a token for the account. Since we don't have a functional controller yet.
 
 ## Kube Controller Manager
 
-Even though we are building a cluster without TLS, we need to generate two keys for token generation.
-
-```
-# Generate private key (for Controller Manager)
-openssl genrsa -out /var/lib/kubernetes/service-account-key.pem 2048
-
-# Generate public key (for API Server verification)
-openssl rsa -in /var/lib/kubernetes/service-account-key.pem -pubout -out /var/lib/kubernetes/service-account.pub
-```
+**Background:**
+A controller is responsible for monitoring a given resource type and driving the system towards the desired state. There is a separata controller responsible for nodes, replicas,
+deployments, services, namespaces, persistent volumes etc. The controllers are checking the state of the monitored resource and making adjustments to it via the API.
+All individual controllers are bundled into a single process known as the Kubernetes Controller Manager.
 
 The API server now needs a new argument for passing the service account keyfile
 ```
@@ -172,6 +178,7 @@ network is not ready: container runtime network not ready: NetworkReady=false re
 sudo mkdir -p /opt/cni/bin /etc/cni/net.d
 wget https://github.com/containernetworking/plugins/releases/download/v1.4.0/cni-plugins-linux-amd64-v1.4.0.tgz
 sudo tar -xzvf cni-plugins-linux-amd64-v1.4.0.tgz -C /opt/cni/bin
+cp configs/10-mynet.conf /etc/cni/net.d
  ```
 
 The config file defines the configuration of the network. The particular file provided represents a minimal configuration enabling pods to have IP addresses from the defines subnet.

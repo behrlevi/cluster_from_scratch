@@ -60,16 +60,19 @@ export INTERNAL_IP=127.0.0.1
 
 API_PID=$!
 
-sleep 5
+sleep 10
 
 echo -e  "\n\nThe API server started with PID: $API_PID \n\n"
 
+# Save the PID into ETCD
+ETCDCTL_API=3 etcdctl --endpoints=http://127.0.0.1:2379 put api_pid $API_PID
+
 # Health check
 
-HEALTH=$(curl http://127.0.0.1:8080/healthz)
+HEALTH=$(curl -k -s -o /dev/null -w "%{http_code}" https://127.0.0.1:6443/healthz)
 
-if [ "$HEALTH" == "ok" ]; then
-	echo -e "\n\nThe API Server is healthy."
+if [ "$HEALTH" -eq 401 ]; then
+	echo -e "\n\nThe API Server is running."
 else
 	echo -e "\n\nThe API Server ran into an error( Response: $HEALTH)"
 	exit 1

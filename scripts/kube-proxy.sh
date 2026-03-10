@@ -14,7 +14,7 @@ fi
 
 /usr/local/bin/kube-proxy \
   --config=/var/lib/kube-proxy/kube-proxy-config.yaml \
-  --v=2
+  --v=2 2>&1 &
 
 API_PID=$!
 
