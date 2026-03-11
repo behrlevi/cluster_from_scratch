@@ -5,6 +5,13 @@ if [ "$EUID" -ne 0 ]; then
   exit 1
 fi
 
+if which kube-apiserver >/dev/null 2>&1; then
+    echo "The Kube API server is installed."
+else
+    wget https://storage.googleapis.com/kubernetes-release/release/v1.26.0/bin/linux/amd64/kube-apiserver
+    cp kube-apiserver /usr/local/bin/
+    chmod +x /usr/local/bin/kube-apiserver
+fi
 # wget https://storage.googleapis.com/kubernetes-release/release/v1.26.0/bin/linux/amd64/kube-apiserver
 # cp kube-apiserver /usr/local/bin/
 # chmod +x /usr/local/bin/kube-apiserver
@@ -58,23 +65,24 @@ export INTERNAL_IP=127.0.0.1
   --service-account-issuer=https://kubernetes.default.svc.cluster.local \
   --v=2 >/dev/null 2>&1 &
 
-API_PID=$!
+PID=$!
 
 sleep 10
 
-echo -e  "\n\nThe API server started with PID: $API_PID \n\n"
+echo -e  "\n\nThe API server started with PID: $PID \n\n"
 
 # Save the PID into ETCD
-ETCDCTL_API=3 etcdctl --endpoints=http://127.0.0.1:2379 put api_pid $API_PID
+echo "Saving the PID to ETCD"
+ETCDCTL_API=3 etcdctl --endpoints=http://127.0.0.1:2379 put api_pid $PID
 
 # Health check
 
 HEALTH=$(curl -k -s -o /dev/null -w "%{http_code}" https://127.0.0.1:6443/healthz)
 
 if [ "$HEALTH" -eq 401 ]; then
-	echo -e "\n\nThe API Server is running."
+	echo -e "\n\nThe API Server is running.\n\n"
 else
-	echo -e "\n\nThe API Server ran into an error( Response: $HEALTH)"
+	echo -e "\n\nThe API Server ran into an error( Response: $HEALTH)\n\n"
 	exit 1
 fi
 

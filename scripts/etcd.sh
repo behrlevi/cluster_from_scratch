@@ -5,6 +5,18 @@ if [ "$EUID" -ne 0 ]; then
   exit 1
 fi
 
+if [which etcd >/dev/null 2>&1]; then
+    echo "ETCD is installed."
+else
+    wget -q --https-only \
+    "https://github.com/coreos/etcd/releases/download/v3.3.9/etcd-v3.3.9-linux-amd64.tar.gz"
+    tar -xf etcd-v3.3.9-linux-amd64.tar.gz
+    cd etcd-v3.3.9-linux-amd64
+    cp etcd etcdctl /usr/local/bin/
+    chmod +x /usr/local/bin/etcd
+    chmod +x /usr/local/bin/etcdctl
+fi
+
 # Download and install the binary
 
 # wget -q --https-only \
@@ -51,5 +63,5 @@ export CONTROLLER0_IP=127.0.0.1
   --initial-cluster-state new \
   --data-dir=/var/lib/etcd 2>&1 &
 
-ETCD_PID=$!
-echo -e "\n\nETCD started with PID: $ETCD_PID"
+PID=$!
+echo -e "\n\nETCD started with PID: $PID"

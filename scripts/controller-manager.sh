@@ -5,6 +5,14 @@ if [ "$EUID" -ne 0 ]; then
   exit 1
 fi
 
+if which controller-manager >/dev/null 2>&1; then
+    echo "The Controller Manager is installed."
+else
+    wget https://storage.googleapis.com/kubernetes-release/release/v1.26.0/bin/linux/amd64/kube-controller-manager
+    cp kube-controller-manager /usr/local/bin/
+    chmod +x /usr/local/bin/kube-controller-manager
+fi
+
 # Download and install the binary
 
 # wget https://storage.googleapis.com/kubernetes-release/release/v1.26.0/bin/linux/amd64/kube-controller-manager
@@ -51,8 +59,13 @@ fi
   --cluster-signing-key-file=/var/lib/kubernetes/ca-key.pem \
   --v=2 >/dev/null 2>&1 &
 
-API_PID=$!
+PID=$!
 
 sleep 5
 
-echo -e  "\n\nKube Controller Manager started with PID: $API_PID \n\n"
+# Save the PID into ETCD
+echo "Saving the PID to ETCD"
+ETCDCTL_API=3 etcdctl --endpoints=http://127.0.0.1:2379 put controller_manager_pid $PID
+
+
+echo -e  "\n\nKube Controller Manager started with PID: $PID \n\n"

@@ -67,24 +67,7 @@ Accounts can be checked with:
 kubectl get serviceaccounts
 ```
 
-When the service account is created we can try to create a pod, but we are getting back the following error:
-"Error from server (ServerTimeout): No API token found for service account "default", retry after the token is automatically created and added to the service account"
-
-This is because **Kubernetes Controller** is not generating a token for the account. Since we don't have a functional controller yet.
-
-## Kube Controller Manager
-
-**Background:**
-A controller is responsible for monitoring a given resource type and driving the system towards the desired state. There is a separata controller responsible for nodes, replicas,
-deployments, services, namespaces, persistent volumes etc. The controllers are checking the state of the monitored resource and making adjustments to it via the API.
-All individual controllers are bundled into a single process known as the Kubernetes Controller Manager.
-
-The API server now needs a new argument for passing the service account keyfile
-```
---service-account-key-file=/var/lib/kubernetes/service-account.pub
-```
-
-At this point we are able to create a pods with:
+At this point we can try adding our first testpod with:
 ```
 kubectl run testpod --image=nginx
 ```
@@ -96,7 +79,7 @@ In the output you will see:
 ```
 Events: none 
 ```
-The pod will be stuck in a peding state since we don't have a scheduler installed yet. We are going to clear this block in the next step.
+The pod will be stuck in a peding state since we don't have a **Scheduler** installed yet. We are going to clear this blocker in the next step.
 
 ## Scheduler
 
@@ -168,6 +151,17 @@ Describe the pod again.
 You will see a new network related error:
 ```
 network is not ready: container runtime network not ready: NetworkReady=false reason:NetworkPluginNotReady message:Network plugin returns error: cni plugin not initialized
+```
+## Kube Controller Manager
+
+**Background:**
+A controller is responsible for monitoring a given resource type and driving the system towards the desired state. There is a separata controller responsible for nodes, replicas,
+deployments, services, namespaces, persistent volumes etc. The controllers are checking the state of the monitored resource and making adjustments to it via the API.
+All individual controllers are bundled into a single process known as the Kubernetes Controller Manager.
+
+The API server now needs a new argument for passing the service account keyfile
+```
+--service-account-key-file=/var/lib/kubernetes/service-account.pub
 ```
 
  ## CNI
