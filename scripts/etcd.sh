@@ -5,11 +5,12 @@ if [ "$EUID" -ne 0 ]; then
   exit 1
 fi
 
-if [which etcd >/dev/null 2>&1]; then
+if which etcd >/dev/null 2>&1; then
     echo "ETCD is installed."
 else
-    wget -q --https-only \
+    wget -q --https-only -P ../Downloads \
     "https://github.com/coreos/etcd/releases/download/v3.3.9/etcd-v3.3.9-linux-amd64.tar.gz"
+    cd ../Downloads
     tar -xf etcd-v3.3.9-linux-amd64.tar.gz
     cd etcd-v3.3.9-linux-amd64
     cp etcd etcdctl /usr/local/bin/

@@ -8,6 +8,7 @@ fi
 if which kubelet >/dev/null 2>&1; then
     echo "The Kubelet is installed."
 else
+    cd ../Downloads
     wget -q --show-progress --https-only --timestamping https://dl.k8s.io/v1.26.0/bin/linux/amd64/kubelet
     cp kubelet /usr/local/bin/
     chmod +x /usr/local/bin/kubelet
@@ -25,7 +26,7 @@ fi
   --cgroup-driver=systemd \
   --container-runtime-endpoint=unix:///var/run/containerd/containerd.sock \
   --v=2 \
-  --fail-swap-on=false
+  --fail-swap-on=false &>/dev/null &
   # --pod-manifest-path=/etc/kubernets/manifests \ # used for static pods
 
 PID=$!

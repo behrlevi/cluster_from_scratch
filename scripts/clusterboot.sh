@@ -8,3 +8,4 @@ bash controller-manager.sh
 bash kube-proxy.sh
 bash kube-scheduler.sh
 bash kubelet.sh
+bash cni.sh

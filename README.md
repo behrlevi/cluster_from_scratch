@@ -112,6 +112,7 @@ openssl genrsa -out ca-key.pem 2048
 # Generate the Public Certificate (Self-signed)
 openssl req -x509 -new -nodes -key ca-key.pem -days 10000 -out ca.pem -subj "/CN=kubernetes"
 
+# Move the keys to the expected directory
 sudo mv ca.pem ca-key.pem /var/lib/kubernetes/
 
 ```
@@ -177,3 +178,8 @@ cp configs/10-mynet.conf /etc/cni/net.d
 
 The config file defines the configuration of the network. The particular file provided represents a minimal configuration enabling pods to have IP addresses from the defines subnet.
 For CNI to pick it up, you need to copy **10-mynet.conf** into **/etc/cni/net.d/**.
+
+At this point you should be able to run the nginx pod in the cluster.
+
+## Kube Proxy
+

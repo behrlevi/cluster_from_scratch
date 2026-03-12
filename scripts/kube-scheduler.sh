@@ -8,6 +8,7 @@ fi
 if which kube-scheduler >/dev/null 2>&1; then
     echo "The Kube Scheduler is installed."
 else
+    cd ../Downloads
     wget https://storage.googleapis.com/kubernetes-release/release/v1.26.0/bin/linux/amd64/kube-scheduler
     cp kube-scheduler /usr/local/bin/
     chmod +x /usr/local/bin/kube-scheduler
