@@ -64,6 +64,8 @@ export INTERNAL_IP=127.0.0.1
   --service-account-key-file=/var/lib/kubernetes/service-account.pub \
   --service-account-signing-key-file=/var/lib/kubernetes/service-account-key.pem \
   --service-account-issuer=https://kubernetes.default.svc.cluster.local \
+  --kubelet-client-certificate=/var/lib/kubernetes/ca.pem \
+  --kubelet-client-key=/var/lib/kubernetes/ca-key.pem \
   --v=2 >/dev/null 2>&1 &
 
 PID=$!
